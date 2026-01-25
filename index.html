@@ -78,7 +78,6 @@
         .troll-btn { display: block; width: 100%; padding: 10px; background: #333; color: white; border: 1px solid #444; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 0.8em; }
         .troll-btn:hover { background: #F44336; transform: scale(1.05); }
         .close-troll { margin-top: 15px; color: #888; cursor: pointer; text-decoration: underline; font-size: 0.9em; }
-        #troll-active-indicator { display: none; position: fixed; top: 20px; right: 20px; background: #F44336; color: white; padding: 10px 20px; border-radius: 50px; font-weight: bold; z-index: 1000; box-shadow: 0 0 20px red; animation: pulse 0.5s infinite; }
 
         /* OVERLAYS & ELEMENTS */
         .vhs-overlay {
@@ -140,8 +139,6 @@
 <div class="secret-trigger-area" onclick="openTrollMenu()">
     <div class="secret-emoji">🌲</div>
 </div>
-
-<div id="troll-active-indicator">⚠️ TROLL MODE ACTIVE ⚠️</div>
 
 <div class="card" id="main-card">
     <h2 id="server-title">TreeLand Monitor</h2>
@@ -222,13 +219,12 @@
     const trollRef = ref(db, 'global_troll_state');
     
     let dvdAnimationId = null;
-    let intervalId = null; // General interval for spawning things
+    let intervalId = null;
 
     onValue(trollRef, (snapshot) => {
         const data = snapshot.val();
         const body = document.body;
         const card = document.getElementById('main-card');
-        const indicator = document.getElementById('troll-active-indicator');
         const vhsLayer = document.getElementById('vhs-layer');
         const fakeUpdate = document.getElementById('fake-update-overlay');
         
@@ -236,7 +232,7 @@
         body.style.cssText = ''; 
         body.className = '';
         card.style.cssText = '';
-        indicator.style.display = 'none'; vhsLayer.style.display = 'none'; fakeUpdate.style.display = 'none';
+        vhsLayer.style.display = 'none'; fakeUpdate.style.display = 'none';
         
         if (dvdAnimationId) { cancelAnimationFrame(dvdAnimationId); dvdAnimationId = null; }
         if (intervalId) { clearInterval(intervalId); intervalId = null; }
@@ -245,7 +241,6 @@
 
         // --- APPLY NEW ---
         if (data && data.effect && data.effect !== 'none') {
-            indicator.style.display = 'block';
             switch(data.effect) {
                 // Classic
                 case 'shake': body.style.animation = 'shake 0.1s infinite'; break;
